@@ -1,0 +1,424 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TRC Ventas</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <meta charset="UTF-8" />
+    <link type="text/css" href='{% static "css/index.css" %}' rel="stylesheet"/>
+    <div id="main_search" style="width:100%; display: flex; flex-direction: row; position:fixed; top:0px; padding-top:5px; z-index:1; background-color: #bf6b65;">
+        <form action="/buscar/" id="buscar">
+          <input id="busqueda" name="busqueda" type="text" placeholder="Ingresar búsqueda" style="width: 300px;" form="buscar"/><input type="submit" value="🔍" style="background:none; border:none; cursor:pointer; font-size: 16px; margin-top:-12px;" form="buscar">
+        </form>
+        <a href='{% static "documentos/ventas.csv" %}' target="_blank" style="text-decoration: none;">📗</a>
+          <div>
+          <a href="/app/" style="text-decoration:none;">🔄</a>
+          <a href="/app/" style="text-decoration:none; font-style: italic; color: rgb(230, 230, 230);">{{fecha}}</a>
+        </div>
+        <table id="cabezal" style="position:fixed; border:none; margin-left: 1px;">
+            <tr style="position: fixed; z-index: 1; top:35px;">
+                <th style="min-width:251px; width:251px; max-width:251px;">CLIENTE</th>
+                <th style="min-width:250px; width:250px; max-width:250px;">SOLICITANTE</th>
+                <th style="min-width:140px; width:140px; max-width:140px;">N° COTIZACIÓN</th>
+                <th style="min-width:100px; width:100px; max-width:100px;">N° OC</th>
+                <th style="min-width:86px; width:86px; max-width:86px;">N° AST O DIAG</th>
+                <th style="min-width:70px; width:70px; max-width:70px;">FECHA AST</th>
+                <th style="min-width:80px; width:80px; max-width:80px;">INFORME</th>
+                <th style="min-width:60px; width:60px; max-width:60px;">N° GUÍA</th>
+                <th style="min-width:120px; width:120px; max-width:120px;">N° FACTURA</th>
+                <th style="min-width:150px; width:150px; max-width:150px;">CANCEL. DOC.</th>
+                <th><input type="submit" value="❌" style="background:none; border:none; cursor:pointer; min-width:29px; width:29px; max-width: 29px;" form="borrar"></th>
+            </tr>
+        </table>
+    </div>
+    <form action="/borrar/" id="borrar"></form>
+    <form action="/archivos/" id="archivos"></form>
+    <form action="/editar/" id="cambios">
+        
+    <table id="cabezal" style="position:fixed; border:none; margin-left:1px;">
+        <tr style="position: fixed; z-index: 1; top:35px;">
+            <th style="min-width:251px; width:251px; max-width:251px;">CLIENTE</th>
+            <th style="min-width:250px; width:250px; max-width:250px;">SOLICITANTE</th>
+            <th style="min-width:140px; width:140px; max-width:140px;">N° COTIZACIÓN</th>
+            <th style="min-width:100px; width:100px; max-width:100px;">N° OC</th>
+            <th style="min-width:86px; width:86px; max-width:86px;">N° AST O DIAG</th>
+            <th style="min-width:70px; width:70px; max-width:70px;">FECHA AST</th>
+            <th style="min-width:80px; width:80px; max-width:80px;">INFORME</th>
+            <th style="min-width:60px; width:60px; max-width:60px;">N° GUÍA</th>
+            <th style="min-width:120px; width:120px; max-width:120px;">N° FACTURA</th>
+            <th style="min-width:150px; width:150px; max-width:150px;">CANCEL. DOC.</th>
+            <th><input type="submit" value="❌" style="background:none; border:none; cursor:pointer; min-width:29px; width:29px; max-width: 29px;" form="borrar"></th>
+        </tr>
+    </table>
+</head>
+<body>
+
+        <table id="ventas" style="margin-top:77px; margin-left:1px; position:relative;">
+        {% for venta in ventas %}
+        <tr>  
+            <td name='{{ venta.0|add:"cliente" }}' id='{{ venta.0|add:"cliente" }}' style="max-width:252px; width:252px; min-width:252px; overflow-x:auto;">{{venta.1}}</td>
+            <td name='{{ venta.0|add:"solicitante" }}' id='{{ venta.0|add:"solicitante" }}' style="max-width:250px; width:250px; min-width:250px; overflow-x:auto;">{{venta.2}}</td>
+            <td style="max-width:140px; width:140px; min-width:140px;"><div id="item" style="flex-direction: row;">
+                <p name='{{ venta.0|add:"n_cotizacion" }}' id='{{ venta.0|add:"n_cotizacion" }}' style="margin-top: 0px; margin-right:2px; margin-bottom: 0px; width: 92px; min-width: 92px; overflow-x:auto;">{{venta.3}}</p>
+                <input type="date" name='{{ venta.0|add:"fechacot" }}' value="{{hoypago}}" min="2022-01-01" max="2100-12-31" form="cambios">
+                <input type="checkbox" name='{{ venta.0|add:"cancelcot" }}' id='{{ venta.0|add:"cancelcot" }}' style="display:none;" form="cambios"/><label for='{{ venta.0|add:"cancelcot" }}' style="cursor:pointer; font-size: 11px;">✔️</label>
+                {% if venta.27 %}
+                    {% with 'documentos/cotizaciones/'|add:venta.16 as file_path %}
+                    <a href='{% static file_path %}' target="_blank" style="text-decoration: none;">📄</a>
+                    <input type="checkbox" name='{{ venta.0|add:"borrar_cotiz" }}' id='{{ venta.0|add:"borrar_cotiz" }}' style="display:none;" form="archivos"/><label for='{{ venta.0|add:"borrar_cotiz" }}' style="cursor:pointer; font-size: 9px;">✖️</label>
+                    {% endwith %}
+                {% else %}
+                <input type="file" id='{{ venta.0|add:"n_cotizacionA" }}' name='{{ venta.0|add:"n_cotizacionA" }}' form='archivos' hidden/><label for='{{ venta.0|add:"n_cotizacionA" }}' style="cursor:pointer;">📎</label>
+                {% endif %}
+            </div></td>
+            <td style="max-width:100px; width:100px; min-width:100px;"><div id="item" style="flex-direction: row;">
+                
+                <p name='{{venta.0|add:"n_oc"}}' id='{{ venta.0|add:"n_oc" }}' style="margin-top: 0px; margin-bottom: 0px; min-width: 80px;">{{venta.4}}</p>
+                {% if venta.10 == "0" %}
+                {% if not venta.25 and not venta.28 and not venta.31%}
+                ❗
+                {% endif %}
+                {% endif %}
+                
+                
+                {% if venta.28 %}
+                    {% with 'documentos/órdenes de compra/'|add:venta.17 as file_path %}
+                    <a href='{% static file_path %}' target="_blank" style="text-decoration: none;">📄</a>
+                    <input type="checkbox" name='{{ venta.0|add:"borrar_oc" }}' id='{{ venta.0|add:"borrar_oc" }}' style="display:none;" form="archivos"/><label for='{{ venta.0|add:"borrar_oc" }}' style="cursor:pointer; font-size: 9px;">✖️</label>
+                    {% endwith %}
+                {% else %} 
+                <input type="file" id='{{ venta.0|add:"n_ocA" }}' name='{{ venta.0|add:"n_ocA" }}' form='archivos' hidden/><label for='{{ venta.0|add:"n_ocA" }}' style="cursor:pointer;">📎</label>
+                {% endif %}
+            {% if venta.10 == "0" %}
+            {% if venta.25 and not venta.31 and not venta.28 %}
+            </div>
+            <progress class="progbar" value="{{venta.21}}" max="10" ></progress><div class="hide">{{venta.21}}/10 días</div>
+            {% endif %}
+            {% endif %}
+        </td>
+            <td style="max-width:86px; width:86px; min-width:86px;" name='{{ venta.0|add:"n_ast_o_diag" }}' id='{{ venta.0|add:"n_ast_o_diag" }}'>{{venta.5}}</td>
+            <td style="max-width:70px; width:70px; min-width:70px;">
+                {% if venta.6 == "" %}
+                <div style="display:flex; flex-direction:row;">
+                    <input type="date" name='{{ venta.0|add:"fechaast" }}' value="{{hoypago}}" min="2022-01-01" max="2100-12-31" form="cambios">
+                    <input type="checkbox" name='{{ venta.0|add:"cancelast" }}' id='{{ venta.0|add:"cancelast" }}' style="display:none;" form="cambios"/><label for='{{ venta.0|add:"cancelast" }}' style="cursor:pointer; font-size: 11px;">✔️</label>
+                </div>
+                {% endif %}
+            <div style="max-width:70px; width:70px; min-width:70px;" name='{{ venta.0|add:"fecha_ast" }}' id='{{ venta.0|add:"fecha_ast" }}'>
+
+                {{venta.6}}
+            </div>
+            </td>
+            
+            <td style="max-width:80px; width:80px; min-width:80px;"><div id="item" style="flex-direction: row;"><p name='{{ venta.0|add:"informe" }}' id='{{ venta.0|add:"informe" }}' style="margin-top: 0px; margin-bottom: 0px; min-width: 60px;">{{venta.7}}</p>
+                {% if venta.10 == "0" %}
+                {% if not venta.25 and not venta.29 and not venta.31 %}
+                ❗
+                {% endif %}
+                {% endif %}
+                {% if venta.29 %}
+                    {% with 'documentos/informes técnicos/'|add:venta.18 as file_path %}
+                    <a href='{% static file_path %}' target="_blank" style="text-decoration: none;">📄</a>
+                    <input type="checkbox" name='{{ venta.0|add:"borrar_informe" }}' id='{{ venta.0|add:"borrar_informe" }}' style="display:none;" form="archivos"/><label for='{{ venta.0|add:"borrar_informe" }}' style="cursor:pointer; font-size: 9px;">✖️</label>
+                    {% endwith %}
+                {% else %}
+                <input type="file" id='{{ venta.0|add:"informeA" }}' name='{{ venta.0|add:"informeA" }}' form='archivos' hidden/><label for='{{ venta.0|add:"informeA" }}' style="cursor:pointer;">📎</label>
+                {% endif %}
+            {% if venta.10 == "0" %}
+            {% if venta.25 and not venta.31 and not venta.29 %}
+            </div><progress class="progbar" value="{{venta.22}}" max="10"></progress><div class="hide">{{venta.22}}/10 días</div>
+            {% endif %}
+            {% endif %}
+        </td>
+            <td style="max-width:60px; width:60px; min-width:60px;" name='{{ venta.0|add:"n_guia" }}' id='{{ venta.0|add:"n_guia" }}'>{{venta.8}}</td>
+            <td style="max-width:120px; width:120px; min-width:120px;"><div id="item" style="flex-direction: row;"><p name='{{ venta.0|add:"n_factura" }}' id='{{ venta.0|add:"n_factura" }}' style="margin-top: 0px; margin-bottom: 0px; min-width: 90px; overflow-x:auto;">{{venta.9}}</p>
+                {% if not venta.25 %}
+                {% if venta.10 == "0" %}
+                {% if not venta.26 or not venta.31%}
+                ❗
+                {% endif %}
+                {% endif %}
+                {% endif %}
+                {% if venta.30 %}
+                    {% with 'documentos/facturas/'|add:venta.19 as file_path %}
+                    <a href='{% static file_path %}' target="_blank" style="text-decoration: none;">📄</a>
+                    <input type="checkbox" name='{{ venta.0|add:"borrar_factura" }}' id='{{ venta.0|add:"borrar_factura" }}' style="display:none;" form="archivos"/><label for='{{ venta.0|add:"borrar_factura" }}' style="cursor:pointer; font-size: 9px;">✖️</label>
+                    {% endwith %}
+                {% else %}
+                <input type="file" id='{{ venta.0|add:"n_facturaA" }}' name='{{ venta.0|add:"n_facturaA" }}' form='archivos' hidden/><label for='{{ venta.0|add:"n_facturaA" }}' style="cursor:pointer;">📎</label>
+                {% endif %}
+                
+                </div>
+ 
+                
+                {% if not venta.25 and not venta.31 %}
+                {% if venta.10 == "0" %}
+                <div style="display:flex; flex-direction:column;">
+                    <div style="display:flex; flex-direction:row;">
+                        <input type="date" name='{{ venta.0|add:"fechafac" }}' value="{{hoypago}}" min="2022-01-01" max="2100-12-31" form="cambios">
+                        <input type="checkbox" name='{{ venta.0|add:"cancelfac" }}' id='{{ venta.0|add:"cancelfac" }}' style="display:none;" form="cambios"/><label for='{{ venta.0|add:"cancelfac" }}' style="cursor:pointer; font-size: 11px;">✔️</label>
+                    </div>
+                <progress class="progbar" value="{{venta.23}}" max="5" style="width:120px;"></progress>
+                <div class="hide">{{venta.23}}/5 días</div>
+                </div>
+                {% endif %}
+                {% endif %}
+        
+            </td>
+            
+            <td style="max-width:150px; width:150px; min-width:150px;"><div id="item">
+                
+
+                {% if not venta.26 %}
+                {% if venta.10 == "0" %}
+                    <progress class="progbar" value="{{venta.24}}" max="30"></progress>
+                    <div class="hide">{{venta.24}}/30 días</div>
+                {% endif %}
+                {% endif %}
+            </div>
+            {% if venta.10 == "0" %}
+            <div id="pagar" style="display:flex; flex-direction:column;">
+            <input type="date" name='{{ venta.0|add:"pago" }}' value="{{hoypago}}" min="2022-01-01" max="2100-12-31" form="cambios">
+            <div style="display:flex; flex-direction:row; margin-top:5px;">
+            <input type="radio" name='{{ venta.0|add:"banco" }}' value="1" form="cambios" style="height:10px; margin-right: -3px;">
+            <label for='{{venta.0|add:"banco"}}' style="font-size:10px; margin-top:2px; margin-left:2px;">BCI</label>
+            <input type="radio" name='{{ venta.0|add:"banco" }}' value="2" form="cambios" style="height:10px; margin-right:-3px;">
+            <label for='{{venta.0|add:"banco"}}' style="font-size:10px; margin-top:2px; margin-left:2px;">Banco Estado</label>
+            <input type="submit" form="cambios" value="Pagar" style="height:15px; font-size:10px; padding-top: 0px; padding-bottom: 0px; margin-left: 2px;">
+            </div>
+            </div>
+            {% else %}
+            <p name='{{ venta.0|add:"cancel_doc" }}' id='{{ venta.0|add:"cancel_doc" }}' style="margin-top: 0px; margin-bottom: 0px; min-width: 50px; min-height: 20px;">{{venta.10}}</p>
+            {% endif %}
+        </td>
+            <td style="max-width: 29px; min-width:29px; width:29px;"><input type="checkbox" name="{{ venta.0 }}" form="borrar"></td>  
+        </tr>
+        {% endfor %}
+        </form>
+        <tr>
+            <form action="/agregar/" method="GET" accept-charset="utf-8">
+                <td style="min-width:251px; width:251px; max-width:251px;"><input name="cliente" id="cliente" type="text" placeholder="Cliente" /></td>
+                <td style="min-width:250px; width:250px; max-width:250px;"><input name="solicitante" id="solicitante" type="text" placeholder="Solicitante" /></td>
+                <td style="min-width:140px; width:140px; max-width:140px;"><input name="n_cotizacion" id="n_cotizacion" type="text" placeholder="N° Cotización" /></td>
+                <td style="min-width:100px; width:100px; max-width:100px;"><input name="n_oc" id="n_oc" type="text" placeholder="N° OC" /></td>
+                <td style="min-width:86px; width:86px; max-width:86px;"><input name="n_ast_o_diag" id="n_ast_o_diag" type="text" placeholder="N° ast. o diag." /></td>                
+                <td style="min-width:70px; width:70px; max-width:70px;"><input name="fecha_ast" id="fecha_ast" type="text" placeholder="Fecha ast." /></td>
+                <td style="min-width:80px; width:80px; max-width:80px;"><input name="informe" id="informe" type="text" placeholder="Informe" /></td>
+                <td style="min-width:60px; width:60px; max-width:60px;"><input name="n_guia" id="n_guia" type="text" placeholder="N° Guía" /></td>
+                <td style="min-width:120px; width:120px; max-width:120px;"><input name="n_factura" id="n_factura" type="text" placeholder="N° Factura" /></td>
+                <td style="min-width:150px; width:150px; max-width:150px;"><input name="cancel_doc" id="cancel_doc" type="text" placeholder="Cancel. doc." /></td>
+                <td><input type="submit" value="➕" style="background:none; border:none; cursor:pointer; min-width:29px; max-width:29px; width:29px;"></td>
+            </form>
+        </tr>    
+    </table>
+    {% for venta in ventas %}
+    <script>
+        $(document).on("dblclick", '#{{ venta.0|add:"cliente" }}', function(){
+            var current = $(this).text();
+            $('#{{ venta.0|add:"cliente" }}').html('<textarea class="form-control" id="{{ venta.0|add:"clienteN" }}" name="{{ venta.0|add:"clienteN" }}" rows="1" form="cambios">'+current+'</textarea>');
+            $('#{{ venta.0|add:"clienteN" }}').focus();
+
+            $('#{{ venta.0|add:"clienteN" }}').focus(function() {
+                console.log('in');
+            }).blur(function() {
+                var newcont = $('#{{ venta.0|add:"clienteN" }}').val();
+                $('#{{ venta.0|add:"cliente" }}').text(newcont);
+            });
+        })
+        $(document).on("dblclick", '#{{ venta.0|add:"solicitante" }}', function(){
+            var current = $(this).text();
+            $('#{{ venta.0|add:"solicitante" }}').html('<textarea class="form-control" id="{{ venta.0|add:"solicitanteN" }}" name="{{ venta.0|add:"solicitanteN" }}" rows="1" form="cambios">'+current+'</textarea>');
+            $('#{{ venta.0|add:"solicitanteN" }}').focus();
+
+            $('#{{ venta.0|add:"solicitanteN" }}').focus(function() {
+                console.log('in');
+            }).blur(function() {
+                var newcont = $('#{{ venta.0|add:"solicitanteN" }}').val();
+                $('#{{ venta.0|add:"solicitante" }}').text(newcont);
+            });
+        })
+        $(document).on("dblclick", '#{{ venta.0|add:"n_ast_o_diag" }}', function(){
+            var current = $(this).text();
+            $('#{{ venta.0|add:"n_ast_o_diag" }}').html('<textarea class="form-control" id="{{ venta.0|add:"n_ast_o_diagN" }}" name="{{ venta.0|add:"n_ast_o_diagN" }}" rows="1" form="cambios">'+current+'</textarea>');
+            $('#{{ venta.0|add:"n_ast_o_diagN" }}').focus();
+
+            $('#{{ venta.0|add:"n_ast_o_diagN" }}').focus(function() {
+                console.log('in');
+            }).blur(function() {
+                var newcont = $('#{{ venta.0|add:"n_ast_o_diagN" }}').val();
+                $('#{{ venta.0|add:"n_ast_o_diag" }}').text(newcont);
+            });
+        })
+        $(document).on("dblclick", '#{{ venta.0|add:"n_cotizacion" }}', function(){
+            var current = $(this).text();
+            $('#{{ venta.0|add:"n_cotizacion" }}').html('<textarea class="form-control" id="{{ venta.0|add:"n_cotizacionN" }}" name="{{ venta.0|add:"n_cotizacionN" }}" rows="1" form="cambios">'+current+'</textarea>');
+            $('#{{ venta.0|add:"n_cotizacionN" }}').focus();
+
+            $('#{{ venta.0|add:"n_cotizacionN" }}').focus(function() {
+                console.log('in');
+            }).blur(function() {
+                var newcont = $('#{{ venta.0|add:"n_cotizacionN" }}').val();
+                $('#{{ venta.0|add:"n_cotizacion" }}').text(newcont);
+            });
+        })
+        $(document).on("dblclick", '#{{ venta.0|add:"n_oc" }}', function(){
+            var current = $(this).text();
+            $('#{{ venta.0|add:"n_oc" }}').html('<textarea class="form-control" id="{{ venta.0|add:"n_ocN" }}" name="{{ venta.0|add:"n_ocN" }}" rows="1" form="cambios">'+current+'</textarea>');
+            $('#{{ venta.0|add:"n_ocN" }}').focus();
+
+            $('#{{ venta.0|add:"n_ocN" }}').focus(function() {
+                console.log('in');
+            }).blur(function() {
+                var newcont = $('#{{ venta.0|add:"n_ocN" }}').val();
+                $('#{{ venta.0|add:"n_oc" }}').text(newcont);
+            });
+        })
+
+        $(document).on("dblclick", '#{{ venta.0|add:"fecha_ast" }}', function(){
+            var current = $(this).text();
+            $('#{{ venta.0|add:"fecha_ast" }}').html('<textarea class="form-control" id="{{ venta.0|add:"fecha_astN" }}" name="{{ venta.0|add:"fecha_astN" }}" rows="1" form="cambios">'+current+'</textarea>');
+            $('#{{ venta.0|add:"fecha_astN" }}').focus();
+
+            $('#{{ venta.0|add:"fecha_astN" }}').focus(function() {
+                console.log('in');
+            }).blur(function() {
+                var newcont = $('#{{ venta.0|add:"fecha_astN" }}').val();
+                $('#{{ venta.0|add:"fecha_ast" }}').text(newcont);
+            });
+        })
+        $(document).on("dblclick", '#{{ venta.0|add:"informe" }}', function(){
+            var current = $(this).text();
+            $('#{{ venta.0|add:"informe" }}').html('<textarea class="form-control" id="{{ venta.0|add:"informeN" }}" name="{{ venta.0|add:"informeN" }}" rows="1" form="cambios">'+current+'</textarea>');
+            $('#{{ venta.0|add:"informeN" }}').focus();
+
+            $('#{{ venta.0|add:"informeN" }}').focus(function() {
+                console.log('in');
+            }).blur(function() {
+                var newcont = $('#{{ venta.0|add:"informeN" }}').val();
+                $('#{{ venta.0|add:"informe" }}').text(newcont);
+            });
+        })
+        $(document).on("dblclick", '#{{ venta.0|add:"n_factura" }}', function(){
+            var current = $(this).text();
+            $('#{{ venta.0|add:"n_factura" }}').html('<textarea class="form-control" id="{{ venta.0|add:"n_facturaN" }}" name="{{ venta.0|add:"n_facturaN" }}" rows="1" form="cambios">'+current+'</textarea>');
+            $('#{{ venta.0|add:"n_facturaN" }}').focus();
+
+            $('#{{ venta.0|add:"n_facturaN" }}').focus(function() {
+                console.log('in');
+            }).blur(function() {
+                var newcont = $('#{{ venta.0|add:"n_facturaN" }}').val();
+                $('#{{ venta.0|add:"n_factura" }}').text(newcont);
+            });
+        })
+        $(document).on("dblclick", '#{{ venta.0|add:"n_guia" }}', function(){
+            var current = $(this).text();
+            $('#{{ venta.0|add:"n_guia" }}').html('<textarea class="form-control" id="{{ venta.0|add:"n_guiaN" }}" name="{{ venta.0|add:"n_guiaN" }}" rows="1" form="cambios">'+current+'</textarea>');
+            $('#{{ venta.0|add:"n_guiaN" }}').focus();
+
+            $('#{{ venta.0|add:"n_guiaN" }}').focus(function() {
+                console.log('in');
+            }).blur(function() {
+                var newcont = $('#{{ venta.0|add:"n_guiaN" }}').val();
+                $('#{{ venta.0|add:"n_guia" }}').text(newcont);
+            });
+        })
+        $(document).on("dblclick", '#{{ venta.0|add:"cancel_doc" }}', function(){
+            var current = $(this).text();
+            $('#{{ venta.0|add:"cancel_doc" }}').html('<textarea class="form-control" id="{{ venta.0|add:"cancel_docN" }}"  name="{{ venta.0|add:"cancel_docN" }}" rows="1" form="cambios">'+current+'</textarea>');
+            $('#{{ venta.0|add:"cancel_docN" }}').focus();
+
+            $('#{{ venta.0|add:"cancel_docN" }}').focus(function() {
+                console.log('in');
+            }).blur(function() {
+                var newcont = $('#{{ venta.0|add:"cancel_docN" }}').val();
+                $('#{{ venta.0|add:"cancel_doc" }}').text(newcont);
+            });
+        })
+        $('#{{ venta.0|add:"cliente" }}').change(function() {
+            console.log($('#{{ venta.0|add:"cliente" }}').html());
+            $('#cambios').delay(200).submit();
+        });
+        $('#{{ venta.0|add:"solicitante" }}').change(function() {
+            console.log($('#{{ venta.0|add:"solicitante" }}').val());
+            $('#cambios').delay(200).submit();
+        });
+        $('#{{ venta.0|add:"n_ast_o_diag" }}').change(function() {
+            console.log($('#{{ venta.0|add:"n_ast_o_diag" }}').val());
+            $('#cambios').delay(200).submit();
+        });
+        $('#{{ venta.0|add:"n_cotizacion" }}').change(function() {
+            console.log($('#{{ venta.0|add:"n_cotizacion" }}').val());
+            $('#cambios').delay(200).submit();
+        });
+        $('#{{ venta.0|add:"n_oc" }}').change(function() {
+            console.log($('#{{ venta.0|add:"n_oc" }}').val());
+            $('#cambios').delay(200).submit();
+        });
+        $('#{{ venta.0|add:"fecha_ast" }}').change(function() {
+            console.log($('#{{ venta.0|add:"fecha_ast" }}').val());
+            $('#cambios').delay(200).submit();
+        });
+        $('#{{ venta.0|add:"informe" }}').change(function() {
+            console.log($('#{{ venta.0|add:"informe" }}').val());
+            $('#cambios').delay(200).submit();
+        });
+        $('#{{ venta.0|add:"n_factura" }}').change(function() {
+            console.log($('#{{ venta.0|add:"n_factura" }}').val());
+            $('#cambios').delay(200).submit();
+        });
+        $('#{{ venta.0|add:"n_guia" }}').change(function() {
+            console.log($('#{{ venta.0|add:"n_guia" }}').val());
+            $('#cambios').delay(200).submit();
+        });
+        $('#{{ venta.0|add:"cancel_doc" }}').change(function() {
+            console.log($('#{{ venta.0|add:"cancel_doc" }}').val());
+            $('#cambios').delay(200).submit();
+        });
+        $('#{{ venta.0|add:"n_cotizacionA" }}').change(function() {
+            console.log($('#{{ venta.0|add:"n_cotizacionA" }}').val());
+            $('#archivos').delay(200).submit();
+        });
+        $('#{{ venta.0|add:"n_ocA" }}').change(function() {
+            console.log($('#{{ venta.0|add:"n_ocA" }}').val());
+            $('#archivos').delay(200).submit();
+        });   
+        $('#{{ venta.0|add:"informeA" }}').change(function() {
+            console.log($('#{{ venta.0|add:"informeA" }}').val());
+            $('#archivos').delay(200).submit();
+        });   
+        $('#{{ venta.0|add:"n_facturaA" }}').change(function() {
+            console.log($('#{{ venta.0|add:"n_facturaA" }}').text());
+            $('#archivos').delay(200).submit();
+        });       
+        $('#{{ venta.0|add:"borrar_cotiz" }}').change(function() {
+            console.log($('#{{ venta.0|add:"borrar_cotiz" }}').text());
+            $('#archivos').delay(200).submit();
+        });         
+        $('#{{ venta.0|add:"borrar_oc" }}').change(function() {
+            console.log($('#{{ venta.0|add:"borrar_oc" }}').text());
+            $('#archivos').delay(200).submit();
+        });    
+        $('#{{ venta.0|add:"borrar_informe" }}').change(function() {
+            console.log($('#{{ venta.0|add:"borrar_informe" }}').text());
+            $('#archivos').delay(200).submit();
+        });    
+        $('#{{ venta.0|add:"borrar_factura" }}').change(function() {
+            console.log($('#{{ venta.0|add:"borrar_factura" }}').text());
+            $('#archivos').delay(200).submit();
+        });     
+        $('#{{ venta.0|add:"cancelfac" }}').change(function() {
+            console.log($('#{{ venta.0|add:"cancelfac" }}').text());
+            $('#cambios').delay(200).submit();
+        });     
+        $('#{{ venta.0|add:"cancelast" }}').change(function() {
+            console.log($('#{{ venta.0|add:"cancelast" }}').text());
+            $('#cambios').delay(200).submit();
+        });    
+        $('#{{ venta.0|add:"cancelcot" }}').change(function() {
+            console.log($('#{{ venta.0|add:"cancelcot" }}').text());
+            $('#cambios').delay(200).submit();
+        });    
+    </script>
+    {% endfor %}
+</body>
+</html>

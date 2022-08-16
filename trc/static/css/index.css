@@ -1,0 +1,113 @@
+html{
+    font-family: Arial, Helvetica, sans-serif;
+}
+body {
+    height: 100%;
+    background: linear-gradient(#bf6b65,#3b265e);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+table,th,td,tr{
+    border: 1px solid rgb(167, 167, 167);
+    border-collapse: collapse;
+    font-family: Arial, Helvetica, sans-serif;
+}
+table{
+    width:100%;
+    overflow: hidden;
+    text-overflow: clip;
+    white-space: nowrap;
+}
+th{
+    background: linear-gradient(#90ecba,#77c09e);
+    height:20px;
+    font-size: 12px;
+    padding: 10px 10px 10px 10px;
+}
+td{
+    background: linear-gradient(#ffffff,#ebebeb);
+    padding: 10px 10px 10px 10px;
+    max-width: 330px;
+    font-size: 13px;
+}
+#item{
+    display:flex;
+    flex-direction: column;
+}
+#busqueda{
+    margin-bottom:10px;
+    height: 20px;
+    font-size: 12px;
+    width: 20%;
+}
+#search_button{
+    height:26px;
+    vertical-align: middle;
+    margin-left: 5px;
+}
+#cliente, #solicitante, #n_ast_o_diag,#n_cotizacion,#n_oc,#n_ast_entrega,#fecha_ast,#informe,#n_factura,#n_guia,#cancel_doc{
+    background: linear-gradient(#444444,#383838);
+    float: left;
+    position: relative;
+    border: 0;
+    width: 100%;
+    height:30px;
+    margin-top: -10px;
+    margin-bottom: -10px;
+    font-size: 14px;  
+    color:#ffffff;
+}
+form{
+    border: 0;
+}
+.form-control{
+    width: 100%;
+}
+progress{
+    position: relative;
+    width: 100%;
+    min-width: 80px;
+    cursor:pointer;
+}
+.hide{
+    display:none;
+}
+.progbar:hover + .hide{
+    background-color: #464646;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 5px;
+    color: #ebebeb;
+    position:absolute;
+    display:block;
+}
+textarea {
+    resize: none;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    background: linear-gradient(#444444,#383838);
+    float: left;
+    position: relative;
+    border: 0;
+    width: 100%;
+    height:30px;
+    margin-top: -10px;
+    margin-bottom: -10px;  
+    color:#ffffff;
+    overflow: hidden;
+  }
+::placeholder {
+    font-style: italic; /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: rgb(129, 129, 129);
+    opacity: 1; /* Firefox */
+  } 
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: rgb(129, 129, 129);
+  }
+  ::-ms-input-placeholder { /* Microsoft Edge */
+    color: rgb(129, 129, 129);
+  }
