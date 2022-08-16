@@ -2,8 +2,8 @@ import os
 import shutil
 from django.shortcuts import render
 import datetime
-archivo_ventas="https://www.pythonanywhere.com/user/nautilo/files/home/nautilo/trc/trc/static/documentos/ventas.csv"
-archivo_busqueda="https://www.pythonanywhere.com/user/nautilo/files/home/nautilo/trc/trc/busqueda.csv"
+archivo_ventas="/home/nautilo/trc/trc/static/documentos/ventas.csv"
+archivo_busqueda="/home/nautilo/trc/trc/busqueda.csv"
 h = datetime.datetime.now()
 hoy = h.strftime("%A %d de %B de %Y").capitalize()
 hoypago=h.strftime('%Y-%m-%d')
