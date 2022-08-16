@@ -54,7 +54,7 @@ ROOT_URLCONF = 'trc.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['C:/Program Files/trc_ventas/trc/trc/plantillas'],
+        'DIRS': ['/home/nautilo/trc/trc/plantillas'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
