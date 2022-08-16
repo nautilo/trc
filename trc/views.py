@@ -2,8 +2,6 @@ import os
 import shutil
 from django.shortcuts import render
 import datetime
-import locale
-locale.setlocale(locale.LC_ALL,'es_cl')
 archivo_ventas="C:/Program Files/trc_ventas/trc/trc/static/documentos/ventas.csv"
 archivo_busqueda="C:/Program Files/trc_ventas/trc/trc/busqueda.csv"
 h = datetime.datetime.now()
